@@ -74,4 +74,66 @@ postForm.addEventListener("submit", (e)=>{
     console.log(jsonObject)
 });
 
-getPosts()
+// getPosts()
+
+const tblBdy = document.querySelector("table tbody")
+function displayProduct(product){
+    tblBdy.innerHTML += `
+        <tr>
+            <td>${product.productName}</td>
+            <td>${product.description}</td>
+        <tr>
+    `
+}
+
+function getProducts(){
+    fetch("http://localhost:3005/invetory")
+    .then(response=>{
+        return response.json()
+    })
+    .then(products=>{
+        console.log(products)
+        tblBdy.innerHTML = ''
+        products.forEach(product=>{
+            displayProduct(product)
+        })
+    })
+}
+getProducts()
+
+document.querySelector("#inveroty-from").addEventListener("submit", (e)=>{
+    e.preventDefault();
+
+    const form = e.target
+
+    const jsonObject = {
+        productName: form.productName.value,
+        description: form.description.value
+    }
+
+    console.log(jsonObject)
+    fetch("http://localhost:3005/invetory", {
+        method:"POST",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(jsonObject)
+    }).then((response)=>{
+        console.log(response)
+        return response.json()
+    }).then(responseData=>{
+        console.log(responseData)
+        displayProduct(responseData)
+    })
+})
+
+/* console.log("Before Timeout")
+setTimeout(()=>{
+    console.log("Inside timeout");
+}, 3000);
+
+fetch("http://localhost:3005").then(()=>{
+    console.log("After fetch")
+})
+
+console.log("After time out") */
